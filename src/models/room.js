@@ -25,27 +25,15 @@ roomSchema.virtual('bookedList', {
     foreignField: 'roomNo'
 })
 
-    // roomSchema.methods.prepareToSend = function () {
-    //     console.log('from room schema preparetosend')
-    //     const room = this
-    //     const roomObject = room.toObject()
-    //     delete roomObject._id
-    //     const object = []
-    //     roomObject.bookedDates.forEach((date) => {
-    //         const x = {
-    //             From: date.startDate.toDateString(),
-    //             To: date.endDate.toDateString()
-    //         }
-    //         object.push(x)
-    //     })
-    //     roomObject.bookedFor = object
-    //     delete roomObject.bookedDates
-    //     delete roomObject.__v
+roomSchema.methods.prepareToSend = function () {
+    const room = this
+    const roomObject = room.toObject()
 
-    //     console.log(roomObject)
+    delete roomObject._id
+    delete roomObject.__v
 
-    //     return roomObject
-    // }
+    return roomObject
+}
 
 const Room = mongoose.model('Room', roomSchema)
 
