@@ -2,6 +2,7 @@ const express = require('express')
 const User = require('../models/user')
 const Room = require('../models/room')
 const Period = require('../models/period')
+const auth = require('../middlewares/auth')
 
 const router = express.Router()
 
@@ -21,7 +22,6 @@ router.get('/room/noOfBeds', async (req, res) => {
         res.status(500).send(error)
     }
 })
-
 
 // show bookings of given Room No
 router.get('/room/showRoomBookings', async (req, res) => {

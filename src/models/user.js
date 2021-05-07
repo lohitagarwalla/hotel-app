@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require('email-validator')
+const jwt = require('jsonwebtoken')
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -36,6 +37,27 @@ userSchema.virtual('myBookings', {
     foreignField: 'email',
     // option: {sort: {startDate: -1}}
 })
+
+userSchema.methods.genWebToken = function () {
+    const user = this
+    const userObject = user.toObject()
+
+    const email = userObject.email
+
+    const token = jwt.sign({email: email}, 'mySecretKey')
+    // console.log(token)
+    return token
+}
+
+userSchema.methods.prepareToSend = function () {
+    const user = this.toObject()
+
+    delete user._id
+    delete user.__v
+    delete user.password
+
+    return user
+}
 
 const User = mongoose.model('User', userSchema)
 

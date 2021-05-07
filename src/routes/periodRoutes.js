@@ -3,6 +3,7 @@ const Room = require('../models/room')
 const User = require('../models/user')
 const Period = require('../models/period')
 const checkAvailability = require('../utility/checkAvailability')
+const auth = require('../middlewares/auth')
 
 const router = express.Router()
 
@@ -21,11 +22,11 @@ router.get('/period/showAll', async (req, res) => {
 
 
 //book room for given room no, email and a period
-router.post('/period/bookWithRoomNo', async (req, res) => {
+router.post('/period/bookWithRoomNo', auth, async (req, res) => {
     const roomNo = req.body.roomNo
     const startDate = req.body.startDate
     const endDate = req.body.endDate
-    const email = req.body.email
+    const email = req.user.email
 
     bookfor = {
         startDate: new Date(startDate.year, startDate.month, startDate.date),
@@ -38,7 +39,7 @@ router.post('/period/bookWithRoomNo', async (req, res) => {
             res.send('Given room no doesnot exist')
         }
 
-        const user = await User.findOne({ email: email })
+        const user = req.user
         if (!user) {
             res.send('Given user doesnot exist')
         }
@@ -68,11 +69,11 @@ router.post('/period/bookWithRoomNo', async (req, res) => {
 
 
 //book room with given no of beds and period
-router.post('/period/bookWithbeds', async (req, res) => {
+router.post('/period/bookWithbeds', auth, async (req, res) => {
     const beds = req.body.beds
     const startDate = req.body.startDate
     const endDate = req.body.endDate
-    const email = req.body.email
+    const email = req.user.email
 
     bookfor = {
         startDate: new Date(startDate.year, startDate.month, startDate.date),
@@ -89,7 +90,6 @@ router.post('/period/bookWithbeds', async (req, res) => {
         if (rooms.length === 0) {
             res.send('Sorry, room with required no of beds does not exist')
         }
-        // console.log('Room count ', rooms.length)
 
         let index = -1
         let i;
